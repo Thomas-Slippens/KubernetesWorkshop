@@ -27,6 +27,14 @@ A minimal .NET 9 WebAPI template for the Soulsseeker GitOps workshop.
    - Open a PR from your fork back to `Thomas-Slippens/SoulsseekerInfra`
 6. Once the workshop host merges your PR, watch ArgoCD deploy your app to `https://<yourname>.kubernetes.soulsseeker.com` 🚀
 
+## Dapr internal-call exercise
+
+The starter app includes a Dapr-protected `/internal/hello` endpoint. The workshop host provides its token centrally; do not create or commit a token yourself.
+
+1. Visit `https://<yourname>.kubernetes.soulsseeker.com/internal/hello` — it returns `403 Forbidden` because the request did not come through Dapr.
+2. Once Jurgen's app is deployed, visit `https://<yourname>.kubernetes.soulsseeker.com/call/jurgen` — your Dapr sidecar invokes Jurgen's `/internal/hello` endpoint successfully.
+3. Read [the exercise guide](exercises/dapr-service-invocation/README.md) to understand the flow and adapt the endpoints.
+
 ## Local development
 
 ```sh

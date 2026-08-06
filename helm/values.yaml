@@ -24,3 +24,5 @@ ingress:
 dapr:
   appId: "changeme"
   # ↑ set by the ApplicationSet automatically — do not edit this
+  appTokenSecret: "app-api-token"
+  # ↑ created and replicated by the platform — do not edit this

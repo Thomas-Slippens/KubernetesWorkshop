@@ -15,6 +15,7 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: "{{ .Values.dapr.appId }}"
         dapr.io/app-port: "8080"
+        dapr.io/app-token-secret: "{{ .Values.dapr.appTokenSecret }}"
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
@@ -27,6 +28,11 @@ spec:
           env:
             - name: APP_NAME
               value: "{{ .Values.dapr.appId }}"
+            - name: DAPR_APP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dapr.appTokenSecret }}
+                  key: token
           livenessProbe:
             httpGet:
               path: /health
