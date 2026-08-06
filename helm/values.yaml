@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: kubernetesworkshop.azurecr.io/workshop/thomas-slippens/workshopapp
-  tag: "0.02"
+  tag: "0.03"
   # ↑ auto-updated by GitHub Actions on every push
   pullPolicy: IfNotPresent
 
