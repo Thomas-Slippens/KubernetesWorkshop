@@ -1,6 +1,6 @@
 # SoulsseekerWorkshopApp
 
-A minimal .NET 9 WebAPI template for the Soulsseeker GitOps workshop.
+A minimal .NET 10 WebAPI template for the Soulsseeker GitOps workshop.
 
 > **Two repos are involved:**
 > - **This repo** (your fork) — where you write code and push changes. You own this, no PRs needed.
