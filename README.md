@@ -21,8 +21,9 @@ A minimal .NET 9 WebAPI template for the Soulsseeker GitOps workshop.
    - Add the file `workshop/participants/<yourname>.yaml` on your fork:
    ```yaml
    name: <yourname>
-   repoURL: https://github.com/<yourgithubusername>/KubernernetesWorkshop
+   repoURL: https://github.com/<yourgithubusername>/KubernetesWorkshop
    ```
+   > Make sure `repoURL` exactly matches your fork's real URL (copy it from GitHub). A mismatched or misspelled URL means ArgoCD silently deploys nothing.
    > `name` becomes your subdomain — keep it short and lowercase. This is the only PR you submit to the infra repo.
    - Open a PR from your fork back to `Thomas-Slippens/SoulsseekerInfra`
 6. Once the workshop host merges your PR, watch ArgoCD deploy your app to `https://<yourname>.kubernetes.soulsseeker.com` 🚀
@@ -37,8 +38,34 @@ The starter app includes a Dapr-protected `/internal/hello` endpoint. The worksh
 
 ## Local development
 
+Run the app on its own (covers `/`, `/hello`, `/health`):
+
 ```sh
 cd src/WorkshopApp
-dotnet run
+dotnet run --urls http://localhost:5000
 # visit http://localhost:5000
 ```
+
+> Without the `--urls` flag, `dotnet run` uses the ports from `Properties/launchSettings.json`.
+
+Locally, `/internal/hello` always returns `403` (no `DAPR_APP_TOKEN` set) and `/call/{name}`
+fails because there is no Dapr sidecar on `localhost:3500`. To exercise those endpoints, run
+under Dapr.
+
+### Run locally with Dapr
+
+1. Install the [Dapr CLI](https://docs.dapr.io/getting-started/install-dapr-cli/) and initialize the runtime:
+   ```sh
+   dapr init
+   ```
+2. Run the app under Dapr with a token so `/internal/hello` succeeds (Dapr's default HTTP port is `3500`):
+   ```powershell
+   $env:APP_NAME="me"; $env:DAPR_APP_TOKEN="localtoken"
+   dapr run --app-id me --app-port 8080 --app-api-token localtoken `
+     --dapr-http-port 3500 -- dotnet run --urls http://localhost:8080
+   ```
+   `--app-api-token` makes Dapr forward the `dapr-api-token` header to your app; it must match
+   `DAPR_APP_TOKEN` for the `/internal/hello` check to pass.
+3. To test `/call/{name}` locally, start a second app under the same Dapr instance with a
+   different `--app-id`, and simplify the invoke address in `Program.cs` to just the app-id
+   (the `name.workshop-name` form is a cluster/namespace concern).
